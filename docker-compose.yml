@@ -1,0 +1,13 @@
+version: "3"
+services:
+    template-bot:
+        build: "."
+        image: template-bot:latest
+        container_name: template-bot
+        volumes:
+            - "/var/log/template-bot:/usr/src/app/logs"
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.50"
+                    memory: 300M
