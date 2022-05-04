@@ -3,7 +3,7 @@ require("dotenv").config();
 const REQUIRED_KEYS = ["PROD_BOT_TOKEN", "BOT_PREFIX", "LOG_DIR", "ADMIN_ROLE_NAME"]
 
 for (let key of REQUIRED_KEYS) {
-    if(!process.env[key]) {
+    if (!process.env[key]) {
         throw new Error(`Environment variable ${key} is missing or empty`);
     }
 }
@@ -21,7 +21,8 @@ let RUNTIME_CONFIG = {
     // guild_id -> role_id
     ADMIN_ROLE_IDS: {
     },
-    MAINTENANCE_STATUS: false
+    MAINTENANCE_STATUS: false,
+    TEAM_PROFILE_INTERVAL: false
 };
 
 module.exports = {
