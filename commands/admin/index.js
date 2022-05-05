@@ -3,5 +3,5 @@ module.exports = {
     "maintenance": require("./maintenance"),
     "create-admin-role": require("./create-admin-role"),
     "embed": require("./embed"),
-    "setupTeamEmbed": require("./setupTeamEmbed")
+    "setupTeamEmbed": require("./setupTeamEmbed"),
 }

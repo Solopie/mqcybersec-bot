@@ -1,6 +1,31 @@
+const discord = require("discord.js")
+const moment = require("moment");
 const config = require("../../utils/config");
 const logger = require("../../utils/logger");
-const moment = require("moment");
+const ctftime = require("../../utils/ctftime_api")
+
+const updateEmbed = async(msg, teamId) => {
+    const teamData = await ctftime.getTeamData(teamId);
+
+    // Create embed 
+    const teamEmbed = new discord.MessageEmbed()
+        .setColor('#ff0000')
+        .setURL(`https://ctftime.org/team/${teamId}`)
+        .setTitle(teamData.primary_alias || "N/A")
+        .setThumbnail(teamData.logo || "N/A")
+        .addFields({ name: 'Country', value: teamData.country || "N/A" }, { name: 'Worldwide Place', value: teamData.rating["2022"].rating_place.toString() || "N/A" }, { name: 'Country Place', value: teamData.rating["2022"].country_place.toString() || "N/A" }, { name: 'Last updated', value: moment().format("MMM Do YY hh:mm A Z") || "N/A" })
+
+    // Grab the message with the stored id
+    try {
+        let message = await msg.channel.messages.fetch(config.RUNTIME_CONFIG["TEAM_PROFILE_INTERVAL"]);
+        await message.edit({ embeds: [teamEmbed] });
+    } catch (e) {
+        let tempMsg = await msg.channel.send({ embeds: [teamEmbed] });
+        config.RUNTIME_CONFIG["TEAM_PROFILE_INTERVAL"] = tempMsg.id;
+    }
+
+    logger.info("COMMAND", "Team Embed has been updated");
+}
 
 module.exports = {
     name: "setupTeamEmbed",
@@ -8,7 +33,6 @@ module.exports = {
     admin: true,
     usage: `${config.PREFIX}setupTeamEmbed <team_id>`,
     async execute(msg, args) {
-        console.log("Hello?")
         if (config.RUNTIME_CONFIG["TEAM_PROFILE_INTERVAL"]) {
             msg.reply({ content: "Interval is already running" })
             return
@@ -28,45 +52,15 @@ module.exports = {
             return
         }
 
+        await updateEmbed(msg, args[0])
         logger.info("COMMAND", "Starting the interval for team rating message");
 
         // Setup CTF team rank interval
-        setInterval(async () => {
-            const teamData = await ctftime.getTeamData(args[0]);
+        setInterval(async() => {
+                await updateEmbed(msg, args[0])
 
-            // I'm going to do this the lazy way
-
-            // If there is already a message in the channel delete all the messages
-            let messages = await msg.channel.messages.fetch();
-            if (messages.length > 0) {
-                for (let i = 0; i < messages.length; i++) {
-                    // No need to await I don't care
-                    messages.get(i).delete()
-                }
-            }
-
-            // Create embed 
-            const teamEmbed = new Discord.MessageEmbed()
-                .setColor('#ff0000')
-                .setTitle(teamData.primary_alias)
-                .setThumbnail(teamData.logo)
-                .addFields(
-                    { name: 'Country', value: teamData.country },
-                    { name: 'Worldwide Place', value: teamData.rating["2022"].rating_place },
-                    { name: 'Country Place', value: teamData.rating["2022"].country_place },
-                    { name: 'Last updated', value: moment().format("MMM Do YY hh:mm A Z") }
-                )
-
-            msg.channel.send({ embeds: [teamEmbed] });
-
-            logger.info("COMMAND", "Team Embed has been updated");
-
-
-        }, 1 * 60 * 1000) // Update every 1 minute
-
-        config.RUNTIME_CONFIG["TEAM_PROFILE_INTERVAL"] = true
+            }, 1 * 10 * 1000) // Update every 1 minute
 
         msg.delete()
     },
 };
-

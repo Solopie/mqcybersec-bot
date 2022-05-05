@@ -19,12 +19,15 @@ const ADMIN_ROLE_NAME = process.env.ADMIN_ROLE_NAME;
 
 let RUNTIME_CONFIG = {
     // guild_id -> role_id
-    ADMIN_ROLE_IDS: {
-    },
+    ADMIN_ROLE_IDS: {},
     MAINTENANCE_STATUS: false,
-    TEAM_PROFILE_INTERVAL: false
+    TEAM_PROFILE_INTERVAL: "",
 };
 
 module.exports = {
-    BOT_TOKEN, PREFIX, LOG_DIR, ADMIN_ROLE_NAME, RUNTIME_CONFIG
+    BOT_TOKEN,
+    PREFIX,
+    LOG_DIR,
+    ADMIN_ROLE_NAME,
+    RUNTIME_CONFIG
 };

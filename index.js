@@ -15,7 +15,7 @@ for (const [folderName, folderCommands] of Object.entries(commands)) {
     }
 }
 
-client.on("ready", async () => {
+client.on("ready", async() => {
     logger.info("STARTUP", `Logged in as ${client.user.tag}!`);
     client.user.setPresence({
         activities: [{ name: `"${config.PREFIX}help" to get started!` }],
@@ -23,6 +23,7 @@ client.on("ready", async () => {
     });
 
     let guilds = await client.guilds.fetch();
+
     for (let i = 0; i < guilds.size; i++) {
         let partialGuild = guilds.at(i);
         let guild = client.guilds.resolve(partialGuild.id)
@@ -30,7 +31,7 @@ client.on("ready", async () => {
     }
 });
 
-client.on("guildCreate", async (guild) => {
+client.on("guildCreate", async(guild) => {
     logger.info("EVENT", `Joined a guild: "${guild.name}-${guild.id}"`);
     await roles.setExistingAdminRoleId(guild);
 });
@@ -60,7 +61,7 @@ client.on("messageCreate", (msg) => {
     } while (match != null);
 
     // const args = msg.content.slice(config.PREFIX.length).trim().split(/ +/);
-    const command = args.shift().toLowerCase();
+    const command = args.shift();
 
     if (!client.commands.has(command)) return;
 
