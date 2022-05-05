@@ -59,7 +59,7 @@ module.exports = {
         setInterval(async() => {
                 await updateEmbed(msg, args[0])
 
-            }, 1 * 10 * 1000) // Update every 1 minute
+            }, 24 * 60 * 60 * 1000) // Update every day
 
         msg.delete()
     },
