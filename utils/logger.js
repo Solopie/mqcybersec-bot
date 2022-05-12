@@ -39,7 +39,7 @@ const error = (category, message, err) => {
         if (err) throw err;
     });
     if (err) {
-        fs.appendFile(logFile, err.stack, function (err) {
+        fs.appendFile(logFile, err.stack || "", function (err) {
             if (err) throw err;
         });
     }
