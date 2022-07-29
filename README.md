@@ -51,6 +51,7 @@ docker run -d -v /var/log/bot-test/:/usr/src/app/logs/ -m 300m --cpus "0.5" --na
 - Send Messages
 - Manage Roles
     - Create Bot Admin Role
+- Manage Channels
 
 And that's it!
 

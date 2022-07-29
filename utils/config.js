@@ -22,7 +22,9 @@ let RUNTIME_CONFIG = {
     // guild_id -> role_id
     ADMIN_ROLE_IDS: {},
     MAINTENANCE_STATUS: false,
-    TEAM_PROFILE_INTERVAL: ""
+    TEAM_PROFILE_INTERVAL: "",
+    // guild_id -> [channel ids, ...]
+    STATS_CHANNELS_IDS: {}
 };
 
 module.exports = {

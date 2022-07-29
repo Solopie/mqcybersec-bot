@@ -4,5 +4,6 @@ module.exports = {
     "create-admin-role": require("./create-admin-role"),
     "embed": require("./embed"),
     "setupTeamEmbed": require("./setupTeamEmbed"),
-    "event": require("./event")
+    "event": require("./event"),
+    "create-stats-channels": require("./create-stats-channels")
 }

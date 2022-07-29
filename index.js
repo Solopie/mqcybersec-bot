@@ -15,7 +15,7 @@ for (const [folderName, folderCommands] of Object.entries(commands)) {
     }
 }
 
-client.on("ready", async() => {
+client.on("ready", async () => {
     logger.info("STARTUP", `Logged in as ${client.user.tag}!`);
     client.user.setPresence({
         activities: [{ name: `"${config.PREFIX}help" to get started!` }],
@@ -27,11 +27,37 @@ client.on("ready", async() => {
     for (let i = 0; i < guilds.size; i++) {
         let partialGuild = guilds.at(i);
         let guild = client.guilds.resolve(partialGuild.id)
+        // Find existing admin role for each guild
         await roles.setExistingAdminRoleId(guild);
+        // Find existing stat channels
+        // Iterate through channels and see if it contains channel name (very hacky I know I will implement db later)
+        let channels = await guild.channels.fetch();
+        let channelNames = ["*** CTFTIME STATS ***", "GLOBAL", "AU", "RATING", "TARGET"];
+        let statsChannels = [];
+        let hasStatsChannels = true;
+        for (let i = 0; i < channelNames.length; i++) {
+            if (!channels.some(
+                (channel) =>
+                    channel.name.includes(channelNames[i])
+            )) {
+                hasStatsChannels = false;
+                break;
+            } else {
+                statsChannels.push(channels.find(c => c.name.includes(channelNames[i])));
+            }
+        }
+
+        if (hasStatsChannels) {
+            config.RUNTIME_CONFIG["STATS_CHANNELS_IDS"][guild.id] = [];
+            for (let i = 0; i < statsChannels.length; i++) {
+                config.RUNTIME_CONFIG["STATS_CHANNELS_IDS"][guild.id].push(statsChannels.id);
+            }
+        }
     }
+
 });
 
-client.on("guildCreate", async(guild) => {
+client.on("guildCreate", async (guild) => {
     logger.info("EVENT", `Joined a guild: "${guild.name}-${guild.id}"`);
     await roles.setExistingAdminRoleId(guild);
 });
