@@ -1,10 +1,11 @@
-const Discord = require("discord.js");
+const { Client, Collection, Intents } = require("discord.js")
 const logger = require("./utils/logger");
 const config = require("./utils/config");
 const roles = require("./utils/roles");
+const statsChannels = require("./utils/stats_channels")
 
-const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
-client.commands = new Discord.Collection();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+client.commands = new Collection();
 const commands = require("./commands");
 
 // Import utility/general/admin commands
@@ -50,7 +51,7 @@ client.on("ready", async () => {
         if (hasStatsChannels) {
             config.RUNTIME_CONFIG["STATS_CHANNELS_IDS"][guild.id] = [];
             for (let i = 0; i < statsChannels.length; i++) {
-                config.RUNTIME_CONFIG["STATS_CHANNELS_IDS"][guild.id].push(statsChannels.id);
+                config.RUNTIME_CONFIG["STATS_CHANNELS_IDS"][guild.id].push(statsChannels[i].id);
             }
         }
     }
@@ -67,7 +68,12 @@ client.on("guildDelete", (guild) => {
     roles.deleteExistingAdminRoleId(guild);
 });
 
-client.on("messageCreate", (msg) => {
+client.on("messageCreate", async (msg) => {
+    // Update stats channels when webhook has been hit
+    if (msg.webhookId && msg.content.includes("Database updated") && statsChannels.channelsExist(msg.guild)) {
+        statsChannels.updateChannels(msg.guild);
+    }
+
     if (!msg.content.startsWith(config.PREFIX) || msg.author.bot) return;
 
     // Regex to split arguments with quotation marks and spaces - https://stackoverflow.com/a/18647776

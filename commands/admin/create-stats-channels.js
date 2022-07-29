@@ -1,6 +1,7 @@
 const config = require("../../utils/config");
 const logger = require("../../utils/logger");
 const db = require("../../utils/db");
+const statsChannels = require("../../utils/stats_channels")
 const { Permissions } = require("discord.js");
 
 module.exports = {
@@ -11,9 +12,7 @@ module.exports = {
     async execute(msg, args, client) {
         let channelNames = ["*** CTFTIME STATS ***", "GLOBAL", "AU", "RATING", "TARGET"];
         // Check if STATS_CHANNEL_IDS has been initialised
-        if (
-            msg.guild.id in config.RUNTIME_CONFIG["STATS_CHANNELS_IDS"] && config.RUNTIME_CONFIG["STATS_CHANNELS_IDS"][msg.guild.id].length === channelNames.length
-        ) {
+        if (statsChannels.channelsExist(msg.guild)) {
             msg.reply({ content: `Stats channels has already been created`, allowedMentions: { repliedUser: false } });
             return;
         } else {
@@ -32,7 +31,8 @@ module.exports = {
                     tempChannelName = `${channelNames[i]}: ${data[i]}`
                 }
 
-                const tempChannel = await msg.guild.channels.create(tempChannelName, { type: "GUILD_VOICE", permissionOverwrites: [{ id: msg.guild.roles.everyone.id, deny: [Permissions.FLAGS.CONNECT] }] });
+                const tempChannel = await msg.guild.channels.create(tempChannelName, { type: "GUILD_VOICE", permissionOverwrites: [{ id: client.application.id, allow: [Permissions.FLAGS.CONNECT] }, { id: msg.guild.roles.everyone.id, deny: [Permissions.FLAGS.CONNECT] }] });
+                // tempChannel.permissionOverwrites.create(client.application.id, { "CONNECT": true });
                 config.RUNTIME_CONFIG["STATS_CHANNELS_IDS"][msg.guild.id].push(tempChannel.id);
             }
 
