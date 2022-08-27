@@ -24,8 +24,8 @@ module.exports = {
         let channels = await message.guild.channels.fetch()
         let voiceChannel = channels.find(channel => channel.name === "Main CTF Room")
 
-        if(!voiceChannel) {
-            message.reply({ content: "'Main CTF Room' voice channel doesn't exist"})
+        if (!voiceChannel) {
+            message.reply({ content: "'Main CTF Room' voice channel doesn't exist" })
             return
         }
 
@@ -35,23 +35,23 @@ module.exports = {
                 scheduledStartTime: curEvent.start,
                 scheduledEndTime: curEvent.finish,
                 privacyLevel: "GUILD_ONLY",
-                entityType: "VOICE",
+                entityType: "EXTERNAL",
                 description: curEvent.description + "\n\nCheck out the #ctf-schedule embed for more information!",
-                channel: voiceChannel
+                entityMetadata: { "location": "Join us in the VC whenever we're there!" }
             })
         } catch (e) {
-            message.reply({ content: "Something went with creating the scheduled event"})
+            message.reply({ content: "Something went with creating the scheduled event" })
             logger.error("COMMAND", "Failed to create scheduled event", e)
         }
 
         // Create channel in active CTFs
         let parentCategory = channels.find(channel => channel.name === "Active CTFs")
-        if(!parentCategory) {
-            message.reply({content: "Active CTFs category doesn't exist"})
+        if (!parentCategory) {
+            message.reply({ content: "Active CTFs category doesn't exist" })
             return
         }
 
-        message.guild.channels.create(curEvent.title, {parent: parentCategory})
+        message.guild.channels.create(curEvent.title, { parent: parentCategory })
 
         logger.info("COMMAND", "Scheduled event created")
         message.delete()
