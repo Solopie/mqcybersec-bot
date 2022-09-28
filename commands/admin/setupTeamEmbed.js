@@ -13,7 +13,7 @@ const updateEmbed = async(msg, teamId) => {
         .setURL(`https://ctftime.org/team/${teamId}`)
         .setTitle(teamData.primary_alias || "N/A")
         .setThumbnail(teamData.logo || "N/A")
-        .addFields({ name: 'Country', value: teamData.country || "N/A" }, { name: 'Worldwide Place', value: teamData.rating["2022"].rating_place.toString() || "N/A" }, { name: 'Country Place', value: teamData.rating["2022"].country_place.toString() || "N/A" }, { name: 'Last updated', value: moment().format("MMM Do YY hh:mm A Z") || "N/A" })
+        .addFields({ name: 'Country', value: teamData.country || "N/A" }, { name: 'Worldwide Place', value: teamData.rating["2022"].rating_place.toString() || "N/A" }, { name: 'Country Place', value: teamData.rating["2022"].country_place.toString() || "N/A" }, { name: 'Last updated', value: `<t:${moment().unix()}>` || "N/A" })
 
     // Grab the message with the stored id
     try {
