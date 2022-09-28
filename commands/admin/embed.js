@@ -32,8 +32,8 @@ module.exports = {
                 { name: 'Format', value: curEvent.format },
                 { name: 'Link', value: curEvent.url },
                 { name: 'CTFTime URL', value: curEvent.ctftime_url },
-                { name: 'Start', value: moment(curEvent.start).format("MMM Do YY hh:mm A Z") },
-                { name: 'Finish', value: moment(curEvent.finish).format("MMM Do YY hh:mm A Z") },
+                { name: 'Start', value: `<t:${moment(curEvent.start).unix()}>` },
+                { name: 'Finish', value: `<t:${moment(curEvent.finish).unix()}>` },
             )
 
         logger.info("COMMAND", "Event embed sent")
